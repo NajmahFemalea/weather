@@ -1,5 +1,5 @@
 import streamlit as st
-from PIL import Image, ImageOps
+import cv2
 import tensorflow as tf
 import numpy as np
 
@@ -10,11 +10,16 @@ def load_model():
 
 # Fungsi untuk memprediksi gambar
 def predict_image(image, model):
-    size = (150, 150)  
-    image = ImageOps.fit(image, size, Image.ANTIALIAS)
-    img = np.asarray(image)
-    img = img / 255.0  
-    img = np.expand_dims(img, axis=0) 
+    size = (150, 150)
+    # Convert image to numpy array
+    img = np.array(image)
+    # Resize using OpenCV
+    img = cv2.resize(img, size, interpolation=cv2.INTER_LINEAR)
+    # Normalize
+    img = img / 255.0
+    # Add batch dimension
+    img = np.expand_dims(img, axis=0)
+    # Predict with the model
     prediction = model.predict(img)
     return prediction
 
