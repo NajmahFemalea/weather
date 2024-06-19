@@ -1,25 +1,20 @@
 import streamlit as st
-import cv2
+from PIL import Image, ImageOps
 import tensorflow as tf
 import numpy as np
 
 # Fungsi untuk memuat model TensorFlow yang sudah dilatih
 def load_model():
-    model = tf.keras.models.load_model('model.h5')
+    model = tf.keras.models.load_model('datayglama/BETTER/model.h5')
     return model
 
 # Fungsi untuk memprediksi gambar
 def predict_image(image, model):
-    size = (150, 150)
-    # Convert image to numpy array
-    img = np.array(image)
-    # Resize using OpenCV
-    img = cv2.resize(img, size, interpolation=cv2.INTER_LINEAR)
-    # Normalize
-    img = img / 255.0
-    # Add batch dimension
-    img = np.expand_dims(img, axis=0)
-    # Predict with the model
+    size = (150, 150)  
+    image = ImageOps.fit(image, size)
+    img = np.asarray(image)
+    img = img / 255.0  
+    img = np.expand_dims(img, axis=0) 
     prediction = model.predict(img)
     return prediction
 
